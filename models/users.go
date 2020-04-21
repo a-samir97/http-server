@@ -1,13 +1,14 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 )
 
 type User struct {
 	ID        int
-	firstName string
-	lastName  string
+	FirstName string
+	LastName  string
 }
 
 var (
@@ -20,6 +21,9 @@ func GetUsers() []*User {
 }
 
 func AddUser(u User) (User, error) {
+	if u.ID != 0 {
+		return User{}, errors.New("New User must not include id or it must be set to zero")
+	}
 	u.ID = nextID
 	nextID++
 	users = append(users, &u)
@@ -33,18 +37,18 @@ func GetUserById(id int) (User, error) {
 		}
 	}
 
-	return User{}, fmt.Errorf("user is not found")
+	return User{}, fmt.Errorf("User with ID '%v' not found", id)
 }
 
 func UpdateUser(u User) (User, error) {
-	for i, uu := range users {
-		if uu.ID == u.ID {
+	for i, candidate := range users {
+		if candidate.ID == u.ID {
 			users[i] = &u
 			return u, nil
 		}
 	}
 
-	return User{}, fmt.Errorf("user is not found here")
+	return User{}, fmt.Errorf("User with ID '%v' not found", u.ID)
 }
 
 func RemoveUser(id int) error {
@@ -54,5 +58,6 @@ func RemoveUser(id int) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("user is not found")
+
+	return fmt.Errorf("User with ID '%v' not found", id)
 }

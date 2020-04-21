@@ -52,11 +52,11 @@ func newUserController() *userController {
 	}
 }
 
-func (uc userController) getAll(w http.ResponseWriter, r *http.Request) {
+func (uc *userController) getAll(w http.ResponseWriter, r *http.Request) {
 	encodeResponseAsJSON(models.GetUsers(), w)
 }
 
-func (uc userController) get(id int, w http.ResponseWriter) {
+func (uc *userController) get(id int, w http.ResponseWriter) {
 	u, err := models.GetUserById(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -65,7 +65,7 @@ func (uc userController) get(id int, w http.ResponseWriter) {
 	encodeResponseAsJSON(u, w)
 }
 
-func (uc userController) post(w http.ResponseWriter, r *http.Request) {
+func (uc *userController) post(w http.ResponseWriter, r *http.Request) {
 	u, err := uc.parseRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -81,7 +81,7 @@ func (uc userController) post(w http.ResponseWriter, r *http.Request) {
 	encodeResponseAsJSON(u, w)
 }
 
-func (uc userController) put(id int, w http.ResponseWriter, r *http.Request) {
+func (uc *userController) put(id int, w http.ResponseWriter, r *http.Request) {
 	u, err := uc.parseRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -103,7 +103,7 @@ func (uc userController) put(id int, w http.ResponseWriter, r *http.Request) {
 	encodeResponseAsJSON(u1, w)
 }
 
-func (uc userController) delete(id int, w http.ResponseWriter) {
+func (uc *userController) delete(id int, w http.ResponseWriter) {
 	err := models.RemoveUser(id)
 
 	if err != nil {
@@ -113,7 +113,7 @@ func (uc userController) delete(id int, w http.ResponseWriter) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
-func (uc userController) parseRequest(r *http.Request) (models.User, error) {
+func (uc *userController) parseRequest(r *http.Request) (models.User, error) {
 	dec := json.NewDecoder(r.Body)
 	var u models.User
 	err := dec.Decode(&u)
